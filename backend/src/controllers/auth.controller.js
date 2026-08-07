@@ -7,8 +7,11 @@ import bcrypt from "bcryptjs";
 export async function signup(req, res) {
   const { fullName, email, password } = req.body;
 
+  const validFullName = fullName.length > 0 ? fullName.trim() : "";
+  const validEmail = email.length > 0 ? email.trim() : "";
+
   try {
-    if (!fullName || !email || !password) {
+    if (!validFullName || !validEmail || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -19,11 +22,11 @@ export async function signup(req, res) {
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(validEmail)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: validEmail });
     if (user) {
       return res.status(400).json({ message: "Email already in use" });
     }
@@ -32,8 +35,8 @@ export async function signup(req, res) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
+      fullName: validFullName,
+      email: validEmail.toLowerCase(),
       password: hashedPassword,
     });
 
@@ -45,9 +48,8 @@ export async function signup(req, res) {
         _id: newUser._id,
         fullName,
         email,
-        profilePic: newUser.profilePic,
+        profilePic: newUser.profilePic ?? "",
         createdAt: newUser.createdAt,
-        updatedAt: newUser.updatedAt,
       });
 
       try {
@@ -66,4 +68,43 @@ export async function signup(req, res) {
     console.error("Something went wrong", error);
     res.status(500).json({ message: "Internal server error" });
   }
+}
+
+export async function login(req, res) {
+  const { email, password } = req.body;
+
+  const validEmail = email.length > 0 ? email.trim() : "";
+
+  try {
+    if (!validEmail || !password) {
+      return res.status(400).json({ message: "Missing credentials" });
+    }
+
+    const user = await User.findOne({email: validEmail });
+    if (!user) {
+      return res.status(404).json({ message: "Invalid credentials" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    generateToken(user._id, res);
+
+    return res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic ?? "",
+    });
+  } catch (error) {
+    console.error("Something went wrong", error)
+    return res.status(500).json({message: "Internal server error"})
+  }
+}
+
+export async function logout(req, res){
+  res.cookie("jwt", "", {maxAge: 0})
+  return res.status(200).json({message: "Logged out successfully"})
 }
