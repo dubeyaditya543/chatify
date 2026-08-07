@@ -1,3 +1,5 @@
+import { sendWelcomeEmail } from "../emails/email.handler.js";
+import { env } from "../lib/env.js";
 import { generateToken } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
@@ -37,9 +39,9 @@ export async function signup(req, res) {
 
     if (newUser) {
       const savedUser = await newUser.save();
-      generateToken(savedUser._id, res)
+      generateToken(savedUser._id, res);
 
-      return res.status(201).json({
+      res.status(201).json({
         _id: newUser._id,
         fullName,
         email,
@@ -47,11 +49,21 @@ export async function signup(req, res) {
         createdAt: newUser.createdAt,
         updatedAt: newUser.updatedAt,
       });
+
+      try {
+        await sendWelcomeEmail(
+          savedUser.email,
+          savedUser.fullName,
+          env.CLIENT_URL,
+        );
+      } catch (error) {
+        console.error("Something went wrong", error);
+      }
     } else {
-      return res.status(400).json({ message: "Invalid user details" });
+      res.status(400).json({ message: "Invalid user details" });
     }
   } catch (error) {
     console.error("Something went wrong", error);
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
