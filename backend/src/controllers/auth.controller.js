@@ -30,14 +30,14 @@ export async function signup(req, res) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      fullName,
-      email,
+      fullName: fullName.trim(),
+      email: email.trim().toLowerCase(),
       password: hashedPassword,
     });
 
     if (newUser) {
-      generateToken(newUser._id, res);
-      await newUser.save();
+      const savedUser = await newUser.save();
+      generateToken(savedUser._id, res)
 
       return res.status(201).json({
         _id: newUser._id,
