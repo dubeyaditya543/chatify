@@ -125,7 +125,7 @@ export async function updateProfile(req, res) {
       userId,
       { profilePic: uploadResponse.secure_url },
       { new: true },
-    );
+    ).select("-password");
 
     return res.status(200).json({data: updatedUser})
   } catch (error) {
