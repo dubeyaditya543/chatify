@@ -11,7 +11,11 @@ const envShema = z.object({
   JWT_SECRET: z.string().min(32, "JWT SECRET must be at least 32 char"),
   RESEND_KEY: z.string().min(1, "Resend key is required"),
   EMAIL_FROM: z.string().min(1, "Sender name is required"),
-  EMAIL_DOMAIN: z.string().min(1, "Sender domain is required")
+  EMAIL_DOMAIN: z.string().min(1, "Sender domain is required"),
+  CLOUD_NAME: z.string().min(1, "Cloudinary cloud name is required"),
+  CLOUD_URL: z.string().min(1, "Cloudinary cloud url is required"),
+  CLOUDINARY_API_KEY: z.string().min(1, "Cloudinary api key is required"),
+  CLOUDINARY_API_SECRET: z.string().min(1, "Cloudinary api secret is required")
 })
 
 const parsed = envShema.safeParse(process.env)
