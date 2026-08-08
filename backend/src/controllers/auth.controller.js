@@ -1,4 +1,5 @@
 import { sendWelcomeEmail } from "../emails/email.handler.js";
+import cloudinary from "../lib/cloudinary.js";
 import { env } from "../lib/env.js";
 import { generateToken } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
@@ -80,7 +81,7 @@ export async function login(req, res) {
       return res.status(400).json({ message: "Missing credentials" });
     }
 
-    const user = await User.findOne({email: validEmail });
+    const user = await User.findOne({ email: validEmail });
     if (!user) {
       return res.status(404).json({ message: "Invalid credentials" });
     }
@@ -99,12 +100,36 @@ export async function login(req, res) {
       profilePic: user.profilePic ?? "",
     });
   } catch (error) {
-    console.error("Something went wrong", error)
-    return res.status(500).json({message: "Internal server error"})
+    console.error("Something went wrong", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 }
 
-export async function logout(req, res){
-  res.cookie("jwt", "", {maxAge: 0})
-  return res.status(200).json({message: "Logged out successfully"})
+export async function logout(req, res) {
+  res.cookie("jwt", "", { maxAge: 0 });
+  return res.status(200).json({ message: "Logged out successfully" });
+}
+
+export async function updateProfile(req, res) {
+  try {
+    const { profilePic } = req.body;
+    if (!profilePic) {
+      return res.status(400).json({ message: "Profile pic is required" });
+    }
+
+    const userId = req.user._id;
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: uploadResponse.secure_url },
+      { new: true },
+    );
+
+    return res.status(200).json({data: updatedUser})
+  } catch (error) {
+    console.error("Error in profile update", error)
+    return res.status(500).json({message: "Internal server error"})
+  }
 }
