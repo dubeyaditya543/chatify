@@ -1,14 +1,24 @@
 import { Router } from "express";
-import { login, signup, logout, updateProfile } from "../controllers/auth.controller.js";
+import {
+  login,
+  signup,
+  logout,
+  updateProfile,
+} from "../controllers/auth.controller.js";
 import { protectedRoute } from "../middlewares/auth.middleware.js";
+import { arcjetProtectFn } from "../middlewares/arcjet.middleware.js";
 
-const router = Router()
+const router = Router();
 
-router.post("/signup", signup)
-router.post("/login", login)
-router.post("/logout", logout)
-router.put("/update-profile", protectedRoute, updateProfile)
+router.use(arcjetProtectFn)
 
-router.get("/check", protectedRoute, (req, res) => res.status(200).json(req.user))
+router.post("/signup", signup);
+router.post("/login", login);
+router.post("/logout", logout);
+router.put("/update-profile", protectedRoute, updateProfile);
 
-export default router
+router.get("/check", protectedRoute, (req, res) =>
+  res.status(200).json(req.user),
+);
+
+export default router;
