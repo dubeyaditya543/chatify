@@ -13,9 +13,10 @@ const envShema = z.object({
   EMAIL_FROM: z.string().min(1, "Sender name is required"),
   EMAIL_DOMAIN: z.string().min(1, "Sender domain is required"),
   CLOUD_NAME: z.string().min(1, "Cloudinary cloud name is required"),
-  CLOUD_URL: z.string().min(1, "Cloudinary cloud url is required"),
+  CLOUDINARY_URL: z.string().min(1, "Cloudinary cloud url is required"),
   CLOUDINARY_API_KEY: z.string().min(1, "Cloudinary api key is required"),
-  CLOUDINARY_API_SECRET: z.string().min(1, "Cloudinary api secret is required")
+  CLOUDINARY_API_SECRET: z.string().min(1, "Cloudinary api secret is required"),
+  ARCJET_KEY: z.string().min(1, "Arcjet key is required")
 })
 
 const parsed = envShema.safeParse(process.env)
