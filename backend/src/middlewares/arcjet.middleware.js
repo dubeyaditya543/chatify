@@ -19,11 +19,14 @@ export async function arcjetProtectFn(req, res, next) {
       }
     }
 
-    if(decision.results.some(isSpoofedBot)){
-      return res.status(403).json({error: "Spoof bot detected", message: "malicious activity detected"})
+    if (decision.results.some(isSpoofedBot)) {
+      return res.status(403).json({
+        error: "Spoof bot detected",
+        message: "malicious activity detected",
+      });
     }
 
-    next()
+    next();
   } catch (error) {
     console.error("Arcjet protection error", error);
     next();

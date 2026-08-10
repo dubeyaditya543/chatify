@@ -16,7 +16,8 @@ const envShema = z.object({
   CLOUDINARY_URL: z.string().min(1, "Cloudinary cloud url is required"),
   CLOUDINARY_API_KEY: z.string().min(1, "Cloudinary api key is required"),
   CLOUDINARY_API_SECRET: z.string().min(1, "Cloudinary api secret is required"),
-  ARCJET_KEY: z.string().min(1, "Arcjet key is required")
+  ARCJET_KEY: z.string().min(1, "Arcjet key is required"),
+  ARCJET_ENV: z.enum(["development", "production"]).default("development")
 })
 
 const parsed = envShema.safeParse(process.env)

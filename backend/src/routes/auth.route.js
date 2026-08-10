@@ -10,7 +10,7 @@ import { arcjetProtectFn } from "../middlewares/arcjet.middleware.js";
 
 const router = Router();
 
-router.use(arcjetProtectFn)
+// router.use(arcjetProtectFn)
 
 router.post("/signup", signup);
 router.post("/login", login);
