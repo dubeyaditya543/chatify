@@ -26,7 +26,7 @@ export const useAuthStore = create((set) => ({
       set({ authUser: res.data });
       toast.success("Account created successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
       console.error("Something went wrong with signup method", error);
     } finally {
       set({ isSigningUp: false });
@@ -39,7 +39,7 @@ export const useAuthStore = create((set) => ({
       set({authUser: res.data})
       toast.success("Logged in successfully")
     }catch (error){
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data?.message)
       console.error("Something went wrong with login method", error)
     }finally{
       set({isLoggingIn: false})
