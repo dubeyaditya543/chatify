@@ -127,7 +127,7 @@ export async function updateProfile(req, res) {
       { new: true },
     ).select("-password");
 
-    return res.status(200).json({data: updatedUser})
+    return res.status(200).json(updatedUser)
   } catch (error) {
     console.error("Error in profile update", error)
     return res.status(500).json({message: "Internal server error"})

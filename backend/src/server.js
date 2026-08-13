@@ -8,7 +8,7 @@ import { env } from "./lib/env.js"
 
 const app = express()
 
-app.use(express.json())
+app.use(express.json({limit: "10mb"}))
 app.use(cookieParser())
 app.use(cors({origin: env.CLIENT_URL, credentials: true}))
 
