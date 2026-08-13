@@ -9,7 +9,7 @@ export async function getAllContacts(req, res) {
       _id: { $ne: loggedInUser },
     }).select("-password -email -createdAt -updatedAt");
 
-    return res.status(200).json({ data: filteredUsers });
+    return res.status(200).json(filteredUsers);
   } catch (error) {
     console.error("Get contacts controller failed", error);
     return res.status(500).json({ message: "Internal Server Error" });

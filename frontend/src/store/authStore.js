@@ -7,7 +7,7 @@ export const useAuthStore = create((set) => ({
   isCheckingAuth: true,
   isSigningUp: false,
   isLoggingIn: false,
-
+  isImageUploading: false,
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check");
@@ -53,6 +53,19 @@ export const useAuthStore = create((set) => ({
     }catch(error){
       toast.error(error.response.data.message)
       console.error("Something went wrong with logout method", error)
+    }
+  },
+  updateProfile: async (data) => {
+    set({isImageUploading: true})
+    try{
+      const res = await axiosInstance.put("/auth/update-profile", data)
+      set({authUser: res.data})
+      toast.success("Profile updated successfully")
+    }catch(error){
+      toast.error(error.response.data.message)
+      console.error("Something went wrong while updating profile image in auth store", error)
+    }finally{
+      set({isImageUploading: false})
     }
   }
 }));
