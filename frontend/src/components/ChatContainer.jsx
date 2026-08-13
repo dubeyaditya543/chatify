@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "../store/authStore";
 import { useChatStore } from "../store/chatStore";
 import { ChatHeader } from "./ChatHeader";
@@ -10,10 +10,17 @@ export function ChatContainer() {
   const { isMessagesLoading, messages, selectedUser, getMessagesByUserId } =
     useChatStore();
   const { authUser } = useAuthStore();
+  const messageEndRef = useRef(null)
 
   useEffect(() => {
     if(selectedUser?._id) getMessagesByUserId(selectedUser?._id);
   }, [getMessagesByUserId, selectedUser]);
+
+  useEffect(() => {
+    if(messageEndRef.current){
+      messageEndRef.current.scrollIntoView({behavior: "smooth"})
+    }
+  }, [messages])
 
   return (
     <>
@@ -50,6 +57,7 @@ export function ChatContainer() {
                 </div>
               </div>
             ))}
+            <div ref={messageEndRef}></div>
           </div>
         )}
       </div>
