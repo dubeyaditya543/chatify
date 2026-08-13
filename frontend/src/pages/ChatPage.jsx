@@ -8,8 +8,7 @@ import { ProifleHeader } from "../components/ProfileHeader";
 import { useChatStore } from "../store/chatStore";
 
 export default function ChatPage() {
-  const { allContacts, getAllContacts, activeTab, selectedUser } =
-    useChatStore();
+  const { activeTab, selectedUser } = useChatStore();
   return (
     <div className="relative w-full max-w-6xl h-200">
       <BorderAnimatedContainer>
