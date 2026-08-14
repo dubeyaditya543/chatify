@@ -35,7 +35,7 @@ export function ChatContainer() {
             {messages.map((message) => (
               <div
                 key={message._id}
-                className={`chat ${message.senderId.toString() === authUser._id.toString() ? "chat-end" : "chat-end"}`}
+                className={`chat ${message.senderId.toString() === authUser._id.toString() ? "chat-end" : "chat-start"}`}
               >
                 <div
                   className={`chat-bubble relative ${message.senderId.toString() === authUser._id.toString() ? "chat-bubble-primary" : "chat-bubble-secondary"}`}

@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useChatStore } from "../store/chatStore";
 import { UsersLoadingSkeleton } from "./UsersLoadingSkeleton";
+import { useAuthStore } from "../store/authStore";
 
 export function ContactList() {
   const { allContacts, getAllContacts, isUserLoading, setSelectedUser } =
     useChatStore();
+  const {onlineUsers} = useAuthStore()
 
   useEffect(() => {
     getAllContacts();
@@ -21,7 +23,7 @@ export function ContactList() {
           onClick={() => setSelectedUser(contact)}
         >
           <div className="flex items-center gap-3">
-            <div className={`avatar avatar-online`}>
+            <div className={`avatar ${onlineUsers.includes(contact._id) ? "avatar-online" : "avatar-offline"}`}>
               <div className="size-12 rounded-full">
                 <img
                   src={contact.profilePic || "/avatar.png"}
